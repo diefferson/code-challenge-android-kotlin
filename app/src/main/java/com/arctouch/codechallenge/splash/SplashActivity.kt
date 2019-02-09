@@ -16,13 +16,15 @@ class SplashActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splash_activity)
 
-        api.genres(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                Cache.cacheGenres(it.genres)
-                startActivity(Intent(this, HomeActivity::class.java))
-                finish()
-            }
+        startActivity(Intent(this, HomeActivity::class.java))
+
+
+//        api.genres(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE)
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe {
+//                Cache.cacheGenres(it.genres)
+//                finish()
+//            }
     }
 }
