@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Code Challenge</string>
     <string name="movie_and_genres">%s - %s</string>
+    <string name="generic_error">Ops, algo errado aconteceu.</string>
+    <string name="error_get_movies">Erro ao buscar filmes</string>
+    <string name="error_get_genres">Erro ao buscar gêneros</string>
 </resources>
