@@ -1,13 +1,13 @@
 package com.arctouch.codechallenge.ui.home
 
 import com.arctouch.codechallenge.R
-import com.arctouch.codechallenge.model.Movie
+import com.arctouch.codechallenge.data.model.Movie
 import com.arctouch.codechallenge.util.MovieImageUrlBuilder
 import com.arctouch.codechallenge.util.loadUrlImage
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeAdapter(private val movies: List<Movie>) : BaseQuickAdapter<Movie, BaseViewHolder>(R.layout.movie_item,movies) {
+class HomeAdapter(data: List<Movie>) : BaseQuickAdapter<Movie, BaseViewHolder>(R.layout.movie_item,data) {
 
     private val movieImageUrlBuilder = MovieImageUrlBuilder()
 

@@ -3,48 +3,77 @@ package com.arctouch.codechallenge.ui.home
 import android.arch.lifecycle.MutableLiveData
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.data.repository.MoviesRepository
-import com.arctouch.codechallenge.model.Genre
-import com.arctouch.codechallenge.model.UpcomingMoviesResponse
+import com.arctouch.codechallenge.data.model.Genre
+import com.arctouch.codechallenge.data.model.Movie
 import com.arctouch.codechallenge.ui.base.BaseViewModel
+import com.arctouch.codechallenge.ui.base.SingleLiveEvent
 import com.arctouch.codechallenge.util.asyncCatching
 import com.arctouch.codechallenge.util.onFailure
 import com.arctouch.codechallenge.util.onSuccess
 
 class HomeViewModel(private val moviesRepository: MoviesRepository) : BaseViewModel(){
 
-    val movies = MutableLiveData<UpcomingMoviesResponse>()
-    val genres = MutableLiveData<List<Genre>>()
+    var totalPages = 0L
+    var currentPage = 1L
+    val movies = ArrayList<Movie>()
+    val genres = ArrayList<Genre>()
+
+    val enableLoadMore = MutableLiveData<Boolean>()
+    val updatedMovies = SingleLiveEvent<Boolean>()
 
     init {
         getGenres(true)
+    }
+
+    fun refreshMovies() {
+        getMovies(1)
+    }
+
+    fun loadMoreMovies(){
+        if(currentPage< totalPages){
+            currentPage++
+            getMovies(currentPage)
+        }else{
+            enableLoadMore.value = false
+        }
     }
 
     private fun getGenres(update:Boolean){
         asyncCatching {
             moviesRepository.getGenres(update)
         }.onSuccess {
-            genres.value =it
+            genres.clear()
+            genres.addAll(it)
             getMovies(1)
         }.onFailure {
             showError(R.string.error_get_genres)
         }
     }
 
-    fun getMovies(page:Long){
+    private fun getMovies(page:Long){
 
         asyncCatching {
             moviesRepository.getMovies(page)
-        }.onSuccess {
+        }.onSuccess {result->
 
-            val result = it
+            currentPage = result.page
+            totalPages = result.totalPages
+            enableLoadMore.value = currentPage != totalPages
 
-            result.results.map { movie ->
-                movie.copy(genres = genres.value?.filter { movie.genreIds?.contains(it.id) == true })
+            val moviesResult = result.results.map { movie ->
+                movie.copy(genres = genres.filter { movie.genreIds?.contains(it.id) == true })
             }
 
-            movies.value = result
+            if(currentPage == 1L){
+                movies.clear()
+                movies.addAll(moviesResult)
+            }else{
+                movies.addAll(moviesResult)
+            }
 
-        }.onFailure {
+            updatedMovies.value = true
+
+        }.onFailure{
             showError(R.string.error_get_movies)
         }
     }

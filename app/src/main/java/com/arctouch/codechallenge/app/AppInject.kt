@@ -1,8 +1,9 @@
 package com.arctouch.codechallenge.app
 
-import com.arctouch.codechallenge.api.RestClient
+import com.arctouch.codechallenge.data.api.RestClient
 import com.arctouch.codechallenge.data.repository.MoviesRepository
 import com.arctouch.codechallenge.ui.base.BaseViewModel
+import com.arctouch.codechallenge.ui.details.DetailsViewModel
 import com.arctouch.codechallenge.ui.home.HomeViewModel
 import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.Module
@@ -23,6 +24,7 @@ object AppInject {
     private val viewModelModule = module {
         viewModel{ BaseViewModel()}
         viewModel{ HomeViewModel(get())}
+        viewModel{ DetailsViewModel(get())}
     }
 
     private val repositoriesModule: Module = module {
