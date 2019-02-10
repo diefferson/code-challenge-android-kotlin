@@ -9,4 +9,5 @@
     <string name="overview">Sinópse</string>
     <string name="error_get_movie">Erro ao buscar filme</string>
     <string name="movie_list_complete">Lista completa</string>
+    <string name="search_hint">Pesquisar…</string>
 </resources>

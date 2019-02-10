@@ -13,17 +13,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity
-            android:name="com.arctouch.codechallenge.ui.splash.SplashActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+        <activity android:name="com.arctouch.codechallenge.ui.home.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name="com.arctouch.codechallenge.ui.home.HomeActivity" />
 
         <activity android:name=".ui.details.DetailsActivity"
             android:theme="@style/AppTheme.NoActionBar.TranslucentStatus"/>

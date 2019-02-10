@@ -5,7 +5,7 @@ import com.arctouch.codechallenge.BuildConfig
 import com.arctouch.codechallenge.data.api.TmdbApi
 import com.arctouch.codechallenge.data.model.Genre
 import com.arctouch.codechallenge.data.model.Movie
-import com.arctouch.codechallenge.data.model.UpcomingMoviesResponse
+import com.arctouch.codechallenge.data.model.MoviesResponse
 import io.coroutines.cache.core.CachePolicy
 import io.coroutines.cache.core.CoroutinesCache
 import java.util.concurrent.TimeUnit
@@ -18,11 +18,15 @@ class MoviesRepository(private val api:TmdbApi, context: Context): CoroutinesCac
                 CachePolicy.EvictProvider(update)).await().genres
     }
 
-    suspend fun getMovies(page:Long): UpcomingMoviesResponse {
+    suspend fun getMovies(page:Long): MoviesResponse {
 
         return asyncCache({ api.upcomingMovies(page, BuildConfig.DEFAULT_REGION) },
                 MOVIES_KEY+page,
                 CachePolicy.LifeCache(10, TimeUnit.MINUTES)).await()
+    }
+
+    suspend fun searchMovies(query:String, page:Long): MoviesResponse {
+        return api.searchMovies(query,page, BuildConfig.DEFAULT_REGION).await()
     }
 
     suspend fun getMovie(movieId:Long):Movie{

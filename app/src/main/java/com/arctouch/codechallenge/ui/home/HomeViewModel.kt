@@ -5,6 +5,7 @@ import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.data.repository.MoviesRepository
 import com.arctouch.codechallenge.data.model.Genre
 import com.arctouch.codechallenge.data.model.Movie
+import com.arctouch.codechallenge.data.model.MoviesResponse
 import com.arctouch.codechallenge.ui.base.BaseViewModel
 import com.arctouch.codechallenge.ui.base.SingleLiveEvent
 import com.arctouch.codechallenge.util.asyncCatching
@@ -13,11 +14,11 @@ import com.arctouch.codechallenge.util.onSuccess
 
 class HomeViewModel(private val moviesRepository: MoviesRepository) : BaseViewModel(){
 
-    var totalPages = 0L
+    var currentQuery = ""
     var currentPage = 1L
-    val movies = ArrayList<Movie>()
+    var totalPages = 0L
     val genres = ArrayList<Genre>()
-
+    val movies = ArrayList<Movie>()
     val enableLoadMore = MutableLiveData<Boolean>()
     val updatedMovies = SingleLiveEvent<Boolean>()
 
@@ -32,13 +33,17 @@ class HomeViewModel(private val moviesRepository: MoviesRepository) : BaseViewMo
     fun loadMoreMovies(){
         if(currentPage< totalPages){
             currentPage++
-            getMovies(currentPage)
+            if(currentQuery.isEmpty()){
+                getMovies(currentPage)
+            }else{
+                searchMovies(currentQuery, currentPage)
+            }
         }else{
             enableLoadMore.value = false
         }
     }
 
-    private fun getGenres(update:Boolean){
+    private fun getGenres(update:Boolean) {
         asyncCatching {
             moviesRepository.getGenres(update)
         }.onSuccess {
@@ -50,31 +55,49 @@ class HomeViewModel(private val moviesRepository: MoviesRepository) : BaseViewMo
         }
     }
 
-    private fun getMovies(page:Long){
-
+    private fun getMovies(page:Long) {
         asyncCatching {
             moviesRepository.getMovies(page)
         }.onSuccess {result->
-
-            currentPage = result.page
-            totalPages = result.totalPages
-            enableLoadMore.value = currentPage != totalPages
-
-            val moviesResult = result.results.map { movie ->
-                movie.copy(genres = genres.filter { movie.genreIds?.contains(it.id) == true })
-            }
-
-            if(currentPage == 1L){
-                movies.clear()
-                movies.addAll(moviesResult)
-            }else{
-                movies.addAll(moviesResult)
-            }
-
-            updatedMovies.value = true
-
+            handleMoviesResult(result)
         }.onFailure{
             showError(R.string.error_get_movies)
         }
+    }
+
+    fun searchMovies(query:String, page: Long) {
+        if(query.isNotEmpty()){
+            currentQuery = query
+            if(page == 1L){
+                movies.clear()
+                updatedMovies.value = true
+            }
+            asyncCatching {
+                moviesRepository.searchMovies(query, page)
+            }.onSuccess {result->
+                handleMoviesResult(result)
+            }.onFailure {
+                showError(R.string.error_get_movies)
+            }
+        }
+    }
+
+    private fun handleMoviesResult(result: MoviesResponse) {
+        currentPage = result.page
+        totalPages = result.totalPages
+        enableLoadMore.value = currentPage != totalPages
+
+        val moviesResult = result.results.map { movie ->
+            movie.copy(genres = genres.filter { movie.genreIds?.contains(it.id) == true })
+        }
+
+        if (currentPage == 1L) {
+            movies.clear()
+            movies.addAll(moviesResult)
+        } else {
+            movies.addAll(moviesResult)
+        }
+
+        updatedMovies.value = true
     }
 }

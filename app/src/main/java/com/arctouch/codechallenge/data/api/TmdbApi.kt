@@ -2,7 +2,7 @@ package com.arctouch.codechallenge.data.api
 
 import com.arctouch.codechallenge.data.model.GenreResponse
 import com.arctouch.codechallenge.data.model.Movie
-import com.arctouch.codechallenge.data.model.UpcomingMoviesResponse
+import com.arctouch.codechallenge.data.model.MoviesResponse
 import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -17,7 +17,14 @@ interface TmdbApi {
     fun upcomingMovies(
         @Query("page") page: Long,
         @Query("region") region: String
-    ): Deferred<UpcomingMoviesResponse>
+    ): Deferred<MoviesResponse>
+
+    @GET("search/movie")
+    fun searchMovies(
+            @Query("query") query: String,
+            @Query("page") page: Long,
+            @Query("region") region: String
+    ): Deferred<MoviesResponse>
 
     @GET("movie/{id}")
     fun movie(@Path("id") id: Long): Deferred<Movie>

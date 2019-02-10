@@ -7,17 +7,32 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.ViewGroup
 import com.arctouch.codechallenge.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.android.Main
+import kotlin.coroutines.CoroutineContext
 
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
 
     abstract val viewModel: BaseViewModel
     abstract val activityLayout: Int
+    private val executionJob: Job by lazy { Job() }
+
+    override val coroutineContext: CoroutineContext by lazy {
+        Dispatchers.Main + executionJob
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(activityLayout)
         setupViewState()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        executionJob.cancel()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

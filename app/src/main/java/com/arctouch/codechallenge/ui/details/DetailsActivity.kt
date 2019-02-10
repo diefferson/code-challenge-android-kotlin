@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.ui.base.BaseActivity
 import com.arctouch.codechallenge.util.MovieImageUrlBuilder
+import com.arctouch.codechallenge.util.formatDate
 import com.arctouch.codechallenge.util.inflateView
 import com.arctouch.codechallenge.util.loadUrlImage
 import kotlinx.android.synthetic.main.activity_details.*
@@ -39,7 +40,7 @@ class DetailsActivity :BaseActivity(){
                 backdropImageView.loadUrlImage(movie.backdropPath?.let{ movieImageUrlBuilder.buildBackdropUrl(it)})
                 posterImageView.loadUrlImage(movie.posterPath?.let{ movieImageUrlBuilder.buildPosterUrl(it)})
                 titleTextView.text = movie.title
-                releaseDateTextView.text = movie.releaseDate
+                releaseDateTextView.text = movie.releaseDate?.formatDate()
                 genresTextView.text = movie.genres?.joinToString(separator = ", "){ it.name }
                 overviewTextView.text = movie.overview
             }
