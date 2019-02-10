@@ -13,17 +13,13 @@ interface TmdbApi {
     @GET("genre/movie/list")
     fun genres(): Deferred<GenreResponse>
 
-    @GET("movie/popular")
-    fun upcomingMovies(
-        @Query("page") page: Long,
-        @Query("region") region: String
-    ): Deferred<MoviesResponse>
+    @GET("movie/upcoming")
+    fun upcomingMovies(@Query("page") page: Long): Deferred<MoviesResponse>
 
     @GET("search/movie")
     fun searchMovies(
             @Query("query") query: String,
-            @Query("page") page: Long,
-            @Query("region") region: String
+            @Query("page") page: Long
     ): Deferred<MoviesResponse>
 
     @GET("movie/{id}")

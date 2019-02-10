@@ -10,4 +10,5 @@
     <string name="error_get_movie">Erro ao buscar filme</string>
     <string name="movie_list_complete">Lista completa</string>
     <string name="search_hint">Pesquisar…</string>
+    <string name="results_not_found">Nenhum resultado encontrado.</string>
 </resources>

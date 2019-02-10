@@ -21,9 +21,10 @@ class HomeViewModel(private val moviesRepository: MoviesRepository) : BaseViewMo
     val movies = ArrayList<Movie>()
     val enableLoadMore = MutableLiveData<Boolean>()
     val updatedMovies = SingleLiveEvent<Boolean>()
+    var searching = false
 
     init {
-        getGenres(true)
+        getGenres()
     }
 
     fun refreshMovies() {
@@ -43,9 +44,9 @@ class HomeViewModel(private val moviesRepository: MoviesRepository) : BaseViewMo
         }
     }
 
-    private fun getGenres(update:Boolean) {
+    private fun getGenres() {
         asyncCatching {
-            moviesRepository.getGenres(update)
+            moviesRepository.getGenres()
         }.onSuccess {
             genres.clear()
             genres.addAll(it)
@@ -70,11 +71,13 @@ class HomeViewModel(private val moviesRepository: MoviesRepository) : BaseViewMo
             currentQuery = query
             if(page == 1L){
                 movies.clear()
+                searching = true
                 updatedMovies.value = true
             }
             asyncCatching {
                 moviesRepository.searchMovies(query, page)
             }.onSuccess {result->
+                searching = false
                 handleMoviesResult(result)
             }.onFailure {
                 showError(R.string.error_get_movies)

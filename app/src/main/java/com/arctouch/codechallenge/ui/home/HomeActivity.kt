@@ -1,8 +1,6 @@
 package com.arctouch.codechallenge.ui.home
 
 import android.arch.lifecycle.Observer
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.view.Menu
@@ -14,6 +12,7 @@ import com.arctouch.codechallenge.ui.details.DetailsActivity
 import com.arctouch.codechallenge.util.hideKeyboard
 import com.arctouch.codechallenge.util.inflateView
 import com.chad.library.adapter.base.BaseQuickAdapter
+import kotlinx.android.synthetic.main.error_view.view.*
 import kotlinx.android.synthetic.main.home_activity.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -80,7 +79,7 @@ class HomeActivity : BaseActivity(){
         }
 
         recyclerView.adapter = adapter
-        adapter.emptyView = inflateView(R.layout.home_activity_loading, recyclerView)
+        setLoadingView()
     }
 
     private fun observeViewModel(){
@@ -88,6 +87,13 @@ class HomeActivity : BaseActivity(){
         viewModel.updatedMovies.observe(this, Observer {
             if(it!= null && it){
                 swipeRefreshLayout.isRefreshing = false
+
+                if(viewModel.searching){
+                    setLoadingView()
+                }else{
+                    setEmptyView()
+                }
+
                 if(viewModel.currentPage == 1L){
                     adapter.notifyDataSetChanged()
                 }else{
@@ -103,8 +109,9 @@ class HomeActivity : BaseActivity(){
         })
     }
 
+
     private val onRefreshListener = SwipeRefreshLayout.OnRefreshListener{
-        adapter.emptyView = inflateView(R.layout.home_activity_loading, recyclerView)
+        setLoadingView()
         viewModel.refreshMovies()
     }
 
@@ -128,13 +135,25 @@ class HomeActivity : BaseActivity(){
             jobSearch?.cancel()
             jobSearch = launch {
                 delay(500)
+                setLoadingView()
                 viewModel.searchMovies(query,1)
             }
         }
 
         override fun onSearchSubmitted(query: String) {
+            setLoadingView()
+            jobSearch?.cancel()
             viewModel.searchMovies(query,1)
         }
+    }
+
+    private fun setLoadingView(){
+        adapter.emptyView = inflateView(R.layout.home_activity_loading, recyclerView)
+    }
+    private fun setEmptyView() {
+        val emptyView = inflateView(R.layout.error_view, recyclerView)
+        emptyView.messageTextView.text = getString(R.string.results_not_found)
+        adapter.emptyView = emptyView
     }
 
     override fun errorHandler(message: String?) {

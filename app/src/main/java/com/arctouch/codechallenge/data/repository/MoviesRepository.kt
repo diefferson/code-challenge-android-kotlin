@@ -12,21 +12,21 @@ import java.util.concurrent.TimeUnit
 
 class MoviesRepository(private val api:TmdbApi, context: Context): CoroutinesCache(context){
 
-    suspend fun getGenres(update:Boolean) : List<Genre>{
+    suspend fun getGenres() : List<Genre>{
         return asyncCache({ api.genres() },
                 GENRES_KEY,
-                CachePolicy.EvictProvider(update)).await().genres
+                CachePolicy.LifeCache(1, TimeUnit.DAYS)).await().genres
     }
 
     suspend fun getMovies(page:Long): MoviesResponse {
 
-        return asyncCache({ api.upcomingMovies(page, BuildConfig.DEFAULT_REGION) },
+        return asyncCache({ api.upcomingMovies(page) },
                 MOVIES_KEY+page,
                 CachePolicy.LifeCache(10, TimeUnit.MINUTES)).await()
     }
 
     suspend fun searchMovies(query:String, page:Long): MoviesResponse {
-        return api.searchMovies(query,page, BuildConfig.DEFAULT_REGION).await()
+        return api.searchMovies(query,page).await()
     }
 
     suspend fun getMovie(movieId:Long):Movie{

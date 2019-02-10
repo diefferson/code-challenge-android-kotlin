@@ -49,6 +49,7 @@ class RestClient() {
                 .newBuilder()
                 .addQueryParameter("api_key", BuildConfig.API_KEY)
                 .addQueryParameter("language", BuildConfig.DEFAULT_LANGUAGE)
+//                .addQueryParameter("region", BuildConfig.DEFAULT_REGION) //With the region BR the result has few items, disabled to test pagination
                 .build()
         request = request.newBuilder().url(url).build()
 
