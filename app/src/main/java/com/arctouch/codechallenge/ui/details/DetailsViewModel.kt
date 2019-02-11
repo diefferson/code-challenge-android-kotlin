@@ -19,11 +19,12 @@ class DetailsViewModel(private val moviesRepository: MoviesRepository) :BaseView
             asyncCatching {
                 moviesRepository.getMovie(movieId)
             }.onSuccess {
-                movie.value = it
                 dismissLoading()
+                movie.postValue(it)
             }.onFailure {
-                showError(R.string.error_get_movie)
                 dismissLoading()
+                showError(R.string.error_get_movie)
+
             }
         }
     }

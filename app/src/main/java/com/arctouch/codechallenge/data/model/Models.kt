@@ -16,10 +16,10 @@ data class MoviesResponse(
 data class Movie(
     val id: Long,
     val title: String,
-    val overview: String?,
-    val genres: List<Genre>?,
-    @Json(name = "genre_ids") val genreIds: List<Long>?,
-    @Json(name = "poster_path") val posterPath: String?,
-    @Json(name = "backdrop_path") val backdropPath: String?,
-    @Json(name = "release_date") val releaseDate: String?
+    val overview: String? = null,
+    val genres: List<Genre>? = null,
+    @Json(name = "genre_ids") val genreIds: List<Long>? = null,
+    @Json(name = "poster_path") val posterPath: String? = null,
+    @Json(name = "backdrop_path") val backdropPath: String? = null,
+    @Json(name = "release_date") val releaseDate: String? = null
 )

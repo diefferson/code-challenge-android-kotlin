@@ -19,15 +19,15 @@ open class BaseViewModel : ViewModel(), CoroutineScope{
     }
 
     fun showLoading(){
-        viewStateEvent.value = ViewState.Loading(true)
+        viewStateEvent.postValue(ViewState.Loading(true))
     }
 
     fun dismissLoading(){
-        viewStateEvent.value = ViewState.Loading(false)
+        viewStateEvent.postValue(ViewState.Loading(false))
     }
 
     fun showError(@StringRes string:Int){
-        viewStateEvent.value = ViewState.Error(string)
+        viewStateEvent.postValue(ViewState.Error(string))
     }
 
     /**

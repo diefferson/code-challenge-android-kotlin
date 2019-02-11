@@ -23,10 +23,6 @@ class HomeViewModel(private val moviesRepository: MoviesRepository) : BaseViewMo
     val updatedMovies = SingleLiveEvent<Boolean>()
     var searching = false
 
-    init {
-        getGenres()
-    }
-
     fun refreshMovies() {
         getMovies(1)
     }
@@ -44,19 +40,21 @@ class HomeViewModel(private val moviesRepository: MoviesRepository) : BaseViewMo
         }
     }
 
-    private fun getGenres() {
-        asyncCatching {
-            moviesRepository.getGenres()
-        }.onSuccess {
-            genres.clear()
-            genres.addAll(it)
-            getMovies(1)
-        }.onFailure {
-            showError(R.string.error_get_genres)
+    fun getGenres() {
+        if(genres.isEmpty()){
+            asyncCatching {
+                moviesRepository.getGenres()
+            }.onSuccess {
+                genres.clear()
+                genres.addAll(it)
+                getMovies(1)
+            }.onFailure {
+                showError(R.string.error_get_genres)
+            }
         }
     }
 
-    private fun getMovies(page:Long) {
+    fun getMovies(page:Long) {
         asyncCatching {
             moviesRepository.getMovies(page)
         }.onSuccess {result->
@@ -72,7 +70,7 @@ class HomeViewModel(private val moviesRepository: MoviesRepository) : BaseViewMo
             if(page == 1L){
                 movies.clear()
                 searching = true
-                updatedMovies.value = true
+                updatedMovies.postValue(true)
             }
             asyncCatching {
                 moviesRepository.searchMovies(query, page)
@@ -88,7 +86,7 @@ class HomeViewModel(private val moviesRepository: MoviesRepository) : BaseViewMo
     private fun handleMoviesResult(result: MoviesResponse) {
         currentPage = result.page
         totalPages = result.totalPages
-        enableLoadMore.value = currentPage != totalPages
+        enableLoadMore.postValue(currentPage != totalPages)
 
         val moviesResult = result.results.map { movie ->
             movie.copy(genres = genres.filter { movie.genreIds?.contains(it.id) == true })
@@ -101,6 +99,6 @@ class HomeViewModel(private val moviesRepository: MoviesRepository) : BaseViewMo
             movies.addAll(moviesResult)
         }
 
-        updatedMovies.value = true
+        updatedMovies.postValue(true)
     }
 }

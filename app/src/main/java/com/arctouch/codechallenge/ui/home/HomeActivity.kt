@@ -31,6 +31,7 @@ class HomeActivity : BaseActivity(){
         setupAdapter()
         setupToolbar()
         observeViewModel()
+        viewModel.getGenres()
     }
 
     override fun onBackPressed() {

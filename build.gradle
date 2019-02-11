@@ -38,7 +38,7 @@ ext {
     baseRecyclerViewVersion = '2.9.35'
     coroutinesVersion = '0.26.1-eap13'
     glideVersion = '4.7.1'
-    coroutinesCacheVersion = "0.2.0"
+    coroutinesCacheVersion = "0.2.2"
     moshiVersion = "2.3.0"
     shimmerVersion = "0.3.0"
 }

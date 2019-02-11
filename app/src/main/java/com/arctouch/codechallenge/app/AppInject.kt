@@ -5,6 +5,7 @@ import com.arctouch.codechallenge.data.repository.MoviesRepository
 import com.arctouch.codechallenge.ui.base.BaseViewModel
 import com.arctouch.codechallenge.ui.details.DetailsViewModel
 import com.arctouch.codechallenge.ui.home.HomeViewModel
+import io.coroutines.cache.core.CoroutinesCache
 import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.module
@@ -19,6 +20,7 @@ object AppInject {
 
     private val applicationModule: Module = module {
         single { RestClient().api }
+        single { CoroutinesCache(get())}
     }
 
     private val viewModelModule = module {

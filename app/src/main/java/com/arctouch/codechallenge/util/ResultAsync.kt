@@ -21,13 +21,9 @@ class ResultAsync<T> private constructor(action: suspend () -> T, scope: Corouti
         scope.launch {
             try {
                 val result = action()
-                withContext(Dispatchers.Main){
-                    onSuccess(result)
-                }
+                onSuccess(result)
             }catch (e:Throwable){
-                withContext(Dispatchers.Main){
-                    onError(e)
-                }
+                onError(e)
             }
         }
     }
