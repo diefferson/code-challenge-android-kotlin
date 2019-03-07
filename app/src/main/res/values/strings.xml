@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">Code Challenge</string>
     <string name="movie_and_genres">%s - %s</string>
+    <string name="generic_error">Ops, algo errado aconteceu.</string>
+    <string name="generic_error_swipe">Ops, algo errado aconteceu. Deslize para atualizar</string>
+    <string name="error_get_movies">Erro ao buscar filmes</string>
+    <string name="error_get_genres">Erro ao buscar gêneros</string>
+    <string name="genre">Gênero:</string>
+    <string name="overview">Sinópse</string>
+    <string name="error_get_movie">Erro ao buscar filme</string>
+    <string name="movie_list_complete">Lista completa</string>
+    <string name="search_hint">Pesquisar…</string>
+    <string name="results_not_found">Nenhum resultado encontrado.</string>
 </resources>
